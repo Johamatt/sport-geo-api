@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { PlacesController } from './places.controller';
 import { PlaceModel } from './places.model';
+import { PlaceService } from './place.service';
 
 @Module({
   imports: [
@@ -18,5 +19,12 @@ import { PlaceModel } from './places.model';
     SequelizeModule.forFeature([PlaceModel]),
   ],
   controllers: [PlacesController],
+  providers: [PlaceService],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(private readonly placeService: PlaceService) {}
+
+  async onModuleInit() {
+    await this.placeService.savePlacesToDatabase('../dist/places.geojson'); // Trigger the import process when the module initializes
+  }
+}

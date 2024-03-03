@@ -3,6 +3,9 @@
 /node_modules
 /build
 
+# Data
+/src/places.geojson
+
 # Logs
 logs
 *.log
