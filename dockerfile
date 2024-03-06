@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Copy places.geojson to the dist directory
-COPY ./src/places.geojson ../dist/places.geojson
+COPY ./places.geojson ../dist/places.geojson
 
 # Expose the port the app runs on
 EXPOSE 3000

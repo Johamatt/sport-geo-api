@@ -26,6 +26,28 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+
+## Download data
+
+Note that the more data you add, the longer the initial startup of the application will take, as the data is being added to the database. 
+
+1. Download data from https://www.lipas.fi/liikuntapaikat
+2. Click left bottom corner (Luo excel raportti hakutuloksista) 
+3. Add all quick selections (Pikavalinnat)
+4. Select GeoJSON from dropdown
+5. Save it as places.geojson file and add it in project root folder
+
+## Setup .env file
+
+1. Create .env file to project root folder
+2. insert following:
+
+```make
+POSTGRES_DB=db
+POSTGRES_USER=123
+POSTGRES_PASSWORD=123
+```
+
 ## Installation
 
 ```bash
@@ -35,39 +57,11 @@ $ npm install
 ## Running the app
 
 ```bash
-# development
-$ npm run start
+# First time setup:
+$ docker compose up --build
+$ docker exec sport-geo-api-nestjs-app-1 node init_db.ts 
 
-# watch mode
-$ npm run start:dev
+# After the initial setup:
+docker compose up
 
-# production mode
-$ npm run start:prod
-```
 
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).

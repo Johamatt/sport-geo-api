@@ -1,40 +1,52 @@
-import { Table, Column, Model } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+  AutoIncrement,
+} from 'sequelize-typescript';
 
-@Table
-export class PlaceModel extends Model<PlaceModel> {
-  @Column
+@Table({ tableName: 'Places', timestamps: false })
+export class Place extends Model<Place> {
+  @PrimaryKey
+  @AutoIncrement
+  @Column(DataType.INTEGER)
+  id: number;
+
+  @Column(DataType.STRING)
   name: string;
 
-  @Column
+  @Column(DataType.DOUBLE)
   latitude: number;
 
-  @Column
+  @Column(DataType.DOUBLE)
   longitude: number;
 
-  @Column
+  @Column(DataType.STRING)
   type: string;
 
-  @Column
+  @Column(DataType.STRING)
   street_address: string;
 
-  @Column
+  @Column(DataType.STRING)
   city: string;
 
-  @Column
+  @Column(DataType.STRING)
   postal_code: string;
 
-  @Column
+  @Column(DataType.STRING)
   county: string;
 
-  @Column
+  @Column(DataType.STRING)
   country: string;
 
-  @Column
+  @Column(DataType.STRING)
   subtype: string;
 
-  @Column
+  @Column(DataType.STRING)
   mainType: string;
 
-  @Column
+  @Column(DataType.STRING)
   district: string;
 }

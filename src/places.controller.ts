@@ -1,32 +1,22 @@
-import { Controller, Get, Post, Body, OnModuleInit } from '@nestjs/common';
+import { Controller, Get, Post, Body } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
-import { PlaceModel } from './places.model';
-import { PlaceService } from './place.service';
+import { Place } from './places.model';
 
 @Controller('places')
-export class PlacesController implements OnModuleInit {
+export class PlacesController {
   constructor(
-    @InjectModel(PlaceModel) private readonly placeModel: typeof PlaceModel,
+    @InjectModel(Place) private readonly place: typeof Place,
     private readonly sequelize: Sequelize,
-    private readonly placeService: PlaceService,
   ) {}
 
-  async onModuleInit() {
-    await this.importPlaces(); // Trigger the import process when the module initializes
-  }
-
   @Get()
-  async findAll(): Promise<PlaceModel[]> {
-    return this.placeModel.findAll();
+  async findAll(): Promise<Place[]> {
+    return this.place.findAll();
   }
 
   @Post()
-  async create(@Body() data: any): Promise<PlaceModel> {
-    return this.placeModel.create(data);
-  }
-
-  private async importPlaces(): Promise<void> {
-    await this.placeService.savePlacesToDatabase('../dist/places.geojson'); // Trigger the import process
+  async create(@Body() data: any): Promise<Place> {
+    return this.place.create(data);
   }
 }
