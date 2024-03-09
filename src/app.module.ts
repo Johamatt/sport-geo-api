@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { PlacesController } from './places.controller';
-import { Place } from './places.model';
+import { PlacesController } from './places/places.controller';
+import { Place } from './places/places.model';
 
 @Module({
   imports: [
@@ -14,6 +14,9 @@ import { Place } from './places.model';
       database: process.env.POSTGRES_DB || 'db',
       autoLoadModels: true,
       synchronize: true,
+      define: {
+        timestamps: false,
+      },
     }),
     SequelizeModule.forFeature([Place]),
   ],
