@@ -15,7 +15,10 @@ Access Swagger UI: http://localhost:3000/swagger-ui#/
 Note that the more data you add, the longer the initial startup of the application will take, as the data is being added to the database. 
 
 1. Download data from https://www.lipas.fi/liikuntapaikat
-2. Click left bottom corner (Luo excel raportti hakutuloksista) 
+2. Click left bottom corner icon (Luo excel raportti hakutuloksista) 
+3. Add all quick selections (Pikavalinnat)
+4. Select GeoJSON from dropdown
+5. Save it as places.geojson file and add it in project root folder
 
 
 # Sports Geo API with NestJS & PostGIS
@@ -51,8 +54,6 @@ $ docker exec sport-geo-api-nestjs-app-1 node init_db.ts
 # After the initial setup:
 docker compose up
 ```
-
-
 
    [Docker]: <https://docs.docker.com/get-docker/>
    [Node]: <https://nodejs.org/en/download>
