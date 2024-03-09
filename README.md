@@ -16,17 +16,6 @@ Note that the more data you add, the longer the initial startup of the applicati
 4. Select GeoJSON from dropdown
 5. Save it as places.geojson file and add it in project root folder
 
-## Setup .env file
-
-1. Create .env file to project root folder
-2. insert following:
-
-```make
-POSTGRES_DB=db
-POSTGRES_USER=123
-POSTGRES_PASSWORD=123
-```
-
 ## Installation
 
 ```bash
