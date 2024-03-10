@@ -3,6 +3,9 @@
 # Sports Geo API with NestJS & PostGIS
 This application enables users to find the location information of sports facilities by utilizing spatial location search. The data is retrieved from [Lipas], which gathers information about sports venues from various parts of Finland.
 
+Android UI in progress here:
+https://github.com/Johamatt/Geo-Sport-UI-Android
+
 ## Swagger
 
 Explore the API endpoints and interact with the application using Swagger UI.
