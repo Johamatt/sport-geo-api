@@ -4,7 +4,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { Place } from './places.model';
 import { Identifier } from 'sequelize';
 import { ApiBody, ApiParam, ApiTags, ApiQuery } from '@nestjs/swagger';
-import { CreatePlaceDto } from './dto/CreatePlace';
+import { CreatePlaceDto } from './dto/CreatePlaceDTO';
 
 @ApiTags('places')
 @Controller('places')

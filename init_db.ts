@@ -1,5 +1,5 @@
-const fs = require('fs');
 const { Sequelize, DataTypes } = require('sequelize');
+const fs = require('fs');
 
 const sequelize = new Sequelize({
   dialect: 'postgres',
@@ -28,6 +28,10 @@ const Place = sequelize.define('Place', {
   subtype: DataTypes.STRING,
   mainType: DataTypes.STRING,
   district: DataTypes.STRING,
+  geom: {
+    type: DataTypes.GEOMETRY('POINT'),
+    allowNull: true,
+  },
 });
 
 async function savePlacesToDatabase(filePath) {
@@ -46,7 +50,6 @@ async function savePlacesToDatabase(filePath) {
       let latitude, longitude;
 
       if (
-        // TODO
         feature.geometry.type === 'LineString' ||
         feature.geometry.type === 'Polygon'
       ) {
@@ -57,6 +60,8 @@ async function savePlacesToDatabase(filePath) {
 
       latitude = coordinates[1];
       longitude = coordinates[0];
+
+      const geom = { type: 'Point', coordinates: [longitude, latitude] };
 
       await Place.create({
         name: properties['Nimi suomeksi'],
@@ -71,6 +76,7 @@ async function savePlacesToDatabase(filePath) {
         subtype: properties['Liikuntapaikkatyypin alaryhmä'],
         mainType: properties['Liikuntapaikkatyypin pääryhmä'],
         district: properties['Kuntaosa'],
+        geom,
       });
 
       i++;
@@ -78,6 +84,13 @@ async function savePlacesToDatabase(filePath) {
     }
 
     console.log('Data from GeoJSON file inserted into database.');
+
+    // Create spatial index
+    await Place.sequelize.query(
+      'CREATE INDEX IF NOT EXISTS idx_coordinates ON "Places" USING GIST ("geom");',
+    );
+
+    console.log('Spatial index created.');
   } catch (error) {
     console.error('Error saving places to database:', error);
   }
