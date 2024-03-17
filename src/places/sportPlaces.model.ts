@@ -7,8 +7,8 @@ import {
   AutoIncrement,
 } from 'sequelize-typescript';
 
-@Table({ tableName: 'Places', timestamps: false })
-export class Place extends Model<Place> {
+@Table({ tableName: 'SportPlaces', timestamps: false })
+export class SportPlace extends Model<SportPlace> {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)

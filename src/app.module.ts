@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { PlacesController } from './places/places.controller';
-import { Place } from './places/places.model';
+import { PlacesController } from './places/sportPlaces.controller';
+import { SportPlace } from './places/sportPlaces.model';
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { Place } from './places/places.model';
         timestamps: false,
       },
     }),
-    SequelizeModule.forFeature([Place]),
+    SequelizeModule.forFeature([SportPlace]),
   ],
   controllers: [PlacesController],
 })

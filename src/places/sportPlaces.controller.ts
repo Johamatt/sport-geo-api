@@ -1,17 +1,17 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
-import { Place } from './places.model';
+import { SportPlace } from './sportPlaces.model';
 import { Identifier } from 'sequelize';
 import { ApiBody, ApiParam, ApiTags, ApiQuery } from '@nestjs/swagger';
-import { CreatePlaceDto } from './dto/CreatePlaceDTO';
+import { CreateSportPlaceDto } from './dto/CreatePlaceDTO';
 import { QueryTypes } from 'sequelize';
 
-@ApiTags('places')
-@Controller('places')
+@ApiTags('sportplaces')
+@Controller('sportPlaces')
 export class PlacesController {
   constructor(
-    @InjectModel(Place) private readonly place: typeof Place,
+    @InjectModel(SportPlace) private readonly sportPlace: typeof SportPlace,
     private readonly sequelize: Sequelize,
   ) {}
 
@@ -23,11 +23,11 @@ export class PlacesController {
     @Query('latitude') latitude: number,
     @Query('longitude') longitude: number,
     @Query('radius') radius: number,
-  ): Promise<Place[]> {
+  ): Promise<SportPlace[]> {
     try {
-      const nearbyPlaces = await Place.findAll({
+      const nearbyPlaces = await SportPlace.findAll({
         where: Sequelize.literal(`ST_DWithin(
-          "Place"."geom",
+          "SportPlace"."geom",
           ST_MakePoint(${longitude}, ${latitude})::geography,
           ${radius}
         )`),
@@ -42,8 +42,8 @@ export class PlacesController {
 
   @ApiParam({ name: 'id', type: 'string', example: '1' })
   @Get(':id')
-  async findById(@Param('id') id: Identifier): Promise<Place> {
-    return this.place.findByPk(id);
+  async findById(@Param('id') id: Identifier): Promise<SportPlace> {
+    return this.sportPlace.findByPk(id);
   }
 
   @ApiQuery({ name: 'page', required: true, example: 1 })
@@ -52,22 +52,22 @@ export class PlacesController {
   async findAll(
     @Query('page') page: number = 1,
     @Query('perPage') perPage: number = 10,
-  ): Promise<{ places: Place[]; total: number }> {
-    const { count, rows } = await this.place.findAndCountAll({
+  ): Promise<{ sportPlaces: SportPlace[]; total: number }> {
+    const { count, rows } = await this.sportPlace.findAndCountAll({
       limit: perPage,
       offset: (page - 1) * perPage,
     });
 
     return {
-      places: rows,
+      sportPlaces: rows,
       total: count,
     };
   }
 
-  @ApiBody({ type: CreatePlaceDto })
+  @ApiBody({ type: CreateSportPlaceDto })
   @Post()
-  async create(@Body() data: any): Promise<Place> {
-    return this.place.create(data);
+  async create(@Body() data: any): Promise<SportPlace> {
+    return this.sportPlace.create(data);
   }
 
   @ApiQuery({ name: 'latitude', required: true, example: 60.240691 })
@@ -84,7 +84,7 @@ export class PlacesController {
       latitude, 
       longitude,
       count(*) as point_count
-    FROM Places
+    FROM SportPlaces
     WHERE ST_DWithin(
       ST_MakePoint($2, $1)::geography,
       geom::geography,
@@ -111,7 +111,7 @@ export class PlacesController {
       mainType, 
       district, 
       geom
-    FROM Places
+    FROM SportPlaces
     WHERE ST_DWithin(
       ST_MakePoint($2, $1)::geography,
       geom::geography,
@@ -124,7 +124,7 @@ export class PlacesController {
         SELECT 
           id, 
           ST_MakePoint(longitude, latitude)::geography AS point
-        FROM Places
+        FROM SportPlaces
       ) AS subquery
       WHERE ST_DWithin(
         ST_MakePoint($2, $1)::geography,

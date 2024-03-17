@@ -10,7 +10,7 @@ const sequelize = new Sequelize({
   database: process.env.POSTGRES_DB || 'db',
 });
 
-const Place = sequelize.define('Place', {
+const SportPlace = sequelize.define('SportPlace', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -58,7 +58,7 @@ async function savePlacesToDatabase(filePath) {
 
       const geom = { type: 'Point', coordinates: coordinates };
 
-      await Place.create({
+      await SportPlace.create({
         name: properties['Nimi suomeksi'],
         type: properties['Liikuntapaikkatyyppi'],
         street_address: properties['Katuosoite'],
@@ -79,8 +79,8 @@ async function savePlacesToDatabase(filePath) {
     console.log('Data from GeoJSON file inserted into database.');
 
     // Create spatial index
-    await Place.sequelize.query(
-      'CREATE INDEX IF NOT EXISTS idx_coordinates ON "Places" USING GIST ("geom");',
+    await SportPlace.sequelize.query(
+      'CREATE INDEX IF NOT EXISTS idx_coordinates ON "SportPlaces" USING GIST ("geom");',
     );
 
     console.log('Spatial index created.');
