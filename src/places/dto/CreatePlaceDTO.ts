@@ -9,16 +9,6 @@ export class CreatePlaceDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  latitude: number;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
-  longitude: number;
-
-  @ApiProperty()
-  @IsNotEmpty()
   @IsString()
   type: string;
 

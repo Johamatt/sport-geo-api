@@ -17,12 +17,6 @@ export class Place extends Model<Place> {
   @Column(DataType.STRING)
   name: string;
 
-  @Column(DataType.DOUBLE)
-  latitude: number;
-
-  @Column(DataType.DOUBLE)
-  longitude: number;
-
   @Column(DataType.STRING)
   type: string;
 

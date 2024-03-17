@@ -17,8 +17,6 @@ const Place = sequelize.define('Place', {
     autoIncrement: true,
   },
   name: DataTypes.STRING,
-  latitude: DataTypes.DOUBLE,
-  longitude: DataTypes.DOUBLE,
   type: DataTypes.STRING,
   street_address: DataTypes.STRING,
   city: DataTypes.STRING,
@@ -29,7 +27,7 @@ const Place = sequelize.define('Place', {
   mainType: DataTypes.STRING,
   district: DataTypes.STRING,
   geom: {
-    type: DataTypes.GEOMETRY('POINT'),
+    type: DataTypes.GEOMETRY('POINT', 4326),
     allowNull: true,
   },
 });
@@ -58,15 +56,10 @@ async function savePlacesToDatabase(filePath) {
         continue;
       }
 
-      latitude = coordinates[1];
-      longitude = coordinates[0];
-
-      const geom = { type: 'Point', coordinates: [longitude, latitude] };
+      const geom = { type: 'Point', coordinates: coordinates };
 
       await Place.create({
         name: properties['Nimi suomeksi'],
-        latitude,
-        longitude,
         type: properties['Liikuntapaikkatyyppi'],
         street_address: properties['Katuosoite'],
         city: properties['Kunta'],
