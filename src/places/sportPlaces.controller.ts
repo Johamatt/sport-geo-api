@@ -5,7 +5,6 @@ import { SportPlace } from './sportPlaces.model';
 import { Identifier } from 'sequelize';
 import { ApiBody, ApiParam, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { CreateSportPlaceDto } from './dto/CreatePlaceDTO';
-import { QueryTypes } from 'sequelize';
 
 @ApiTags('sportplaces')
 @Controller('sportPlaces')
@@ -68,91 +67,5 @@ export class PlacesController {
   @Post()
   async create(@Body() data: any): Promise<SportPlace> {
     return this.sportPlace.create(data);
-  }
-
-  @ApiQuery({ name: 'latitude', required: true, example: 60.240691 })
-  @ApiQuery({ name: 'longitude', required: true, example: 24.847974 })
-  @ApiQuery({ name: 'radius', required: true, example: 500 })
-  @Get('clusters')
-  async findClusters(
-    @Query('latitude') latitude: number,
-    @Query('longitude') longitude: number,
-    @Query('radius') radius: number,
-  ) {
-    const clustersQuery = `
-    SELECT 
-      latitude, 
-      longitude,
-      count(*) as point_count
-    FROM SportPlaces
-    WHERE ST_DWithin(
-      ST_MakePoint($2, $1)::geography,
-      geom::geography,
-      $3,
-      true
-    )
-    GROUP BY latitude, longitude
-    HAVING count(*) > 1;
-  `;
-
-    const pointsQuery = `
-    SELECT 
-      id, 
-      name, 
-      latitude, 
-      longitude, 
-      type, 
-      street_address, 
-      city, 
-      postal_code, 
-      county, 
-      country, 
-      subtype, 
-      mainType, 
-      district, 
-      geom
-    FROM SportPlaces
-    WHERE ST_DWithin(
-      ST_MakePoint($2, $1)::geography,
-      geom::geography,
-      $3,
-      true
-    )
-    AND id NOT IN (
-      SELECT id
-      FROM (
-        SELECT 
-          id, 
-          ST_MakePoint(longitude, latitude)::geography AS point
-        FROM SportPlaces
-      ) AS subquery
-      WHERE ST_DWithin(
-        ST_MakePoint($2, $1)::geography,
-        subquery.point,
-        $3,
-        true
-      )
-      GROUP BY id
-      HAVING count(*) > 1
-    );
-  `;
-
-    try {
-      const [clusters, points] = await Promise.all([
-        this.sequelize.query(clustersQuery, {
-          bind: [latitude, longitude, radius],
-          type: QueryTypes.SELECT,
-        }),
-        this.sequelize.query(pointsQuery, {
-          bind: [latitude, longitude, radius],
-          type: QueryTypes.SELECT,
-        }),
-      ]);
-
-      return { clusters, points };
-    } catch (error) {
-      console.error('Error querying database:', error);
-      throw error;
-    }
   }
 }
