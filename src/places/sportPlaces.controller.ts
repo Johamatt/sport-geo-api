@@ -5,6 +5,7 @@ import { SportPlace } from './sportPlaces.model';
 import { Identifier } from 'sequelize';
 import { ApiBody, ApiParam, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { CreateSportPlaceDto } from './dto/CreatePlaceDTO';
+import { Feature, Point, FeatureCollection } from 'geojson';
 
 @ApiTags('sportplaces')
 @Controller('sportPlaces')
@@ -67,5 +68,38 @@ export class PlacesController {
   @Post()
   async create(@Body() data: any): Promise<SportPlace> {
     return this.sportPlace.create(data);
+  }
+
+  @Get('map/findAllGeoJson')
+  async findAllGeoJson(): Promise<FeatureCollection<Point>> {
+    const rows = await this.sportPlace.findAll({
+      attributes: ['id', 'name', 'geom', 'mainType'],
+    });
+
+    const features: Feature<Point>[] = rows.map((place: SportPlace) => {
+      return {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: [place.geom.coordinates[0], place.geom.coordinates[1]],
+        },
+        properties: {
+          id: place.id,
+          name: place.name,
+          mainType: place.mainType,
+        },
+      };
+    });
+
+    return {
+      type: 'FeatureCollection',
+      crs: {
+        type: 'name',
+        properties: {
+          name: 'EPSG:4326',
+        },
+      },
+      features: features,
+    };
   }
 }
