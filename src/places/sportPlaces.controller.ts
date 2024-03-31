@@ -73,7 +73,15 @@ export class PlacesController {
   @Get('map/findAllGeoJson')
   async findAllGeoJson(): Promise<FeatureCollection<Point>> {
     const rows = await this.sportPlace.findAll({
-      attributes: ['id', 'name', 'geom', 'mainType'],
+      attributes: [
+        'id',
+        'name',
+        'geom',
+        'mainType',
+        'type',
+        'subtype',
+        'street_address',
+      ],
     });
 
     const features: Feature<Point>[] = rows.map((place: SportPlace) => {
@@ -86,7 +94,7 @@ export class PlacesController {
         properties: {
           id: place.id,
           name: place.name,
-          mainType: place.mainType,
+          type: place.type,
         },
       };
     });
