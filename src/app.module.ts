@@ -6,7 +6,7 @@ import { SportPlace } from './places/sportPlaces.model';
   imports: [
     SequelizeModule.forRoot({
       dialect: 'postgres',
-      host: '192.168.0.10',
+      host: 'postgres',
       port: 5432,
       username: '123',
       password: '123',
