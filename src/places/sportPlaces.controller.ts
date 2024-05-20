@@ -2,8 +2,7 @@ import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sequelize } from 'sequelize-typescript';
 import { SportPlace } from './sportPlaces.model';
-import { Identifier } from 'sequelize';
-import { ApiBody, ApiParam, ApiTags, ApiQuery } from '@nestjs/swagger';
+import { ApiBody, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { CreateSportPlaceDto } from './dto/CreatePlaceDTO';
 import { Feature, Point, FeatureCollection } from 'geojson';
 
@@ -61,28 +60,33 @@ export class PlacesController {
   }
 
   @ApiQuery({ name: 'page', required: true, example: 1 })
-  @ApiQuery({ name: 'perPage', required: true, example: 10 })
+  @ApiQuery({ name: 'limit', required: true, example: 10 })
   @ApiQuery({ name: 'type', required: false, example: 'Kuntosali' })
+  @ApiQuery({ name: 'city', required: false, example: 'Helsinki' })
   @Get()
   async findAll(
     @Query('page') page: number = 1,
-    @Query('perPage') perPage: number = 10,
+    @Query('limit') limit: number = 10,
     @Query('type') type?: string,
-  ): Promise<{ sportPlaces: SportPlace[]; total: number }> {
-    let whereClause = {};
+    @Query('city') city?: string,
+  ): Promise<Partial<SportPlace>[]> {
+    const whereClause: any = {};
     if (type) {
-      whereClause = { type };
+      whereClause.type = type;
     }
-    const { count, rows } = await this.sportPlace.findAndCountAll({
+
+    if (city) {
+      whereClause.city = city;
+    }
+
+    const rows = await this.sportPlace.findAll({
       where: whereClause,
-      limit: perPage,
-      offset: (page - 1) * perPage,
+      limit: limit,
+      offset: (page - 1) * limit,
+      attributes: ['id', 'name', 'type', 'city'],
     });
 
-    return {
-      sportPlaces: rows,
-      total: count,
-    };
+    return rows;
   }
 
   @ApiBody({ type: CreateSportPlaceDto })
